@@ -45,6 +45,10 @@ def show_split_details(tree_obj, feature_list):
 def process_and_test(data, name, target):
     print(f"\n--- Running Sklearn Benchmark for: {name} ---")
     
+    if target not in data.columns:
+        print(f"Error: Target '{target}' not found. Check your file delimiter (sep=';')!")
+        return
+    
     # Cleaning data - filling nulls (Requirement: Handle missing values)
     # Using simple loops for a more manual feel
     for col in data.columns:
@@ -54,9 +58,9 @@ def process_and_test(data, name, target):
             else:
                 data[col] = data[col].fillna(data[col].mode()[0])
     
-    # Encoding target if it isn't a number yet
-    if data[target].dtype == 'object':
-        data[target] = pd.factorize(data[target])[0]
+    for col in data.columns:
+        if data[col].dtype == 'object':
+            data[col] = pd.factorize(data[col])[0]
     
     # Set up X and y
     X_vals = data.drop(target, axis=1)
@@ -85,8 +89,8 @@ def process_and_test(data, name, target):
 if __name__ == "__main__":
     try:
         # 1. Load the real dataset (Requirement: 1000+ rows)
-        df_real = pd.read_csv("real_dataset.csv")
-        process_and_test(df_real, "Real World Credit Data", "loan_status")
+        df_real = pd.read_csv("real_dataset.csv", sep=";")
+        process_and_test(df_real, "Bank Data (Real)", "y")
 
         # 2. Load synthetic
         df_synth = pd.read_csv("synthetic_dataset.csv")
