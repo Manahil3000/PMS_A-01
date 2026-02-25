@@ -165,8 +165,8 @@ try:
     pd.DataFrame(imb_cols).to_csv("imbalanced_dataset.csv", index=False)
 
 
-    real = pd.read_csv("real_dataset.csv")
-    run_model(real, "Real Credit Dataset", "loan_status")
+    real = pd.read_csv("real_dataset.csv", sep=";")
+    run_model(real, "Bank Marketing Dataset", "y")
 
     synthetic = pd.read_csv("synthetic_dataset.csv")
     run_model(synthetic, "Synthetic Dataset", "target")
