@@ -82,8 +82,15 @@ def process_and_test(data, name, target):
     # Get predictions and score it
     preds = model.predict(X_test)
     acc = sk_metrics.accuracy_score(y_test, preds)
+
+    prec = sk_metrics.precision_score(y_test, preds, average='macro', zero_division=0)
+    rec = sk_metrics.recall_score(y_test, preds, average='macro', zero_division=0)
+    f1 = sk_metrics.f1_score(y_test, preds, average='macro', zero_division=0)
     
     print(f"Final Accuracy Score: {acc:.4f}")
+    print(f"Final Precision Score: {prec:.4f}")
+    print(f"Final Recall Score: {rec:.4f}")
+    print(f"Final F1-Score: {f1:.4f}")
 
 # Main execution logic
 if __name__ == "__main__":
