@@ -146,7 +146,32 @@ def run_model(df, dataset_name, target_col):
     predictions = [tree.predict(test_df.iloc[i]) for i in range(len(test_df))]
     actuals = test_df[target_col].values
     accuracy = np.mean(predictions == actuals)
+
+    classes = np.unique(actuals)
+    precisions, recalls, f1_scores = [], [], []
+
+    for c in classes:
+        TP = np.sum((predictions == c) & (actuals == c))
+        FP = np.sum((predictions == c) & (actuals != c))
+        FN = np.sum((predictions != c) & (actuals == c))
+
+        precision = TP / (TP + FP) if (TP + FP) > 0 else 0
+        recall = TP / (TP + FN) if (TP + FN) > 0 else 0
+        f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+
+        precisions.append(precision)
+        recalls.append(recall)
+        f1_scores.append(f1)
+
+    # Macro-average
+    precision_macro = np.mean(precisions)
+    recall_macro = np.mean(recalls)
+    f1_macro = np.mean(f1_scores)
+
     print(f"Model Accuracy for {dataset_name}: {accuracy:.4f}")
+    print(f"Model Precision for {dataset_name}: {precision_macro:.4f}")
+    print(f"Model Recall for {dataset_name}: {recall_macro:.4f}")
+    print(f"Model F1-Score for {dataset_name}: {f1_macro:.4f}")
 
 # 5. Load and Execute on all 3 datasets
 try:
